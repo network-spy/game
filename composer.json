@@ -1,0 +1,24 @@
+{
+  "name":"network-spy/game",
+  "type": "library",
+  "version":"1.0",
+  "description": "game",
+  "keywords": ["game", "php"],
+  "license": "Free",
+  "authors": [
+    {
+      "name": "Tereshchenko Viacheslav"
+    }
+  ],
+  "require":{
+    "php":">=7.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6.2"
+  },
+  "autoload":{
+    "psr-4":{
+      "Game\\":"src/Game/"
+    }
+  }
+}
