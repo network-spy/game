@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Game\Notifier;
 
 use \SplSubject;
@@ -32,24 +34,26 @@ class DisplayMessageSubject implements SplSubject
 
     /**
      * @param SplObserver $observer
+     * @return void
      */
-    public function attach(SplObserver $observer)
+    public function attach(SplObserver $observer): void
     {
         $this->observers->attach($observer);
     }
 
     /**
      * @param SplObserver $observer
+     * @return void
      */
-    public function detach(SplObserver $observer)
+    public function detach(SplObserver $observer): void
     {
         $this->observers->detach($observer);
     }
 
     /**
-     *
+     * @return void
      */
-    public function notify()
+    public function notify(): void
     {
         foreach ($this->observers as $observer) {
             $observer->update($this);
@@ -66,8 +70,9 @@ class DisplayMessageSubject implements SplSubject
 
     /**
      * @param string $message
+     * @return void
      */
-    public function setMessage(string $message)
+    public function setMessage(string $message): void
     {
         $this->message = $message;
     }

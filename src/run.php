@@ -8,14 +8,20 @@ if (!file_exists($composerAutoload)) {
 }
 require $composerAutoload;
 
+$settings = require 'Game/settings.php';
+$config = new \Game\Config($settings);
 
-$observer = new Game\Notifier\DisplayMessageObserver();
 $subject = new Game\Notifier\DisplayMessageSubject();
-$subject->attach($observer);
 
-$game = new Game\Game(
-    new Game\WeaponFactory(),
-    new Game\CharacterFactory(),
+if ($config->get('log.display')) {
+    $observer = new Game\Notifier\DisplayMessageObserver();
+    $subject->attach($observer);
+}
+
+
+$game = new Game\GameDemo(
+    new Game\WeaponFactory($config->get('weapons')),
+    new Game\CharacterFactory($config->get('characters')),
     $subject
 );
 

@@ -5,12 +5,21 @@ declare(strict_types=1);
 namespace Game;
 
 use Game\Notifier\DisplayMessageSubject;
+use Game\Weapon\Axe;
+use Game\Weapon\Bow;
+use Game\Weapon\Knife;
+use Game\Weapon\Sword;
+use Game\Weapon\Fist;
+use Game\Character\Elf;
+use Game\Character\Gnome;
+use Game\Character\Knight;
+use Game\Character\Troll;
 
 /**
- * Class Game
+ * Class GameDemo
  * @package Game
  */
-class Game
+class GameDemo
 {
     /**
      * @var WeaponFactory
@@ -45,24 +54,29 @@ class Game
 
     /**
      * Start point
+     * @return void
      */
-    public function run()
+    public function run(): void
     {
-        $weapons[] =  $this->weaponFactory->createSword();
-        $weapons[] = $this->weaponFactory->createAxe();
-        $weapons[] = $this->weaponFactory->createBow();
-        $weapons[] = $this->weaponFactory->createKnife();
+        $weapons[] = $this->weaponFactory->create(Sword::getName());
+        $weapons[] = $this->weaponFactory->create(Axe::getName());
+        $weapons[] = $this->weaponFactory->create(Bow::getName());
+        $weapons[] = $this->weaponFactory->create(Knife::getName());
+        $weapons[] = $this->weaponFactory->create(Fist::getName());
 
         $weaponsCount = \count($weapons) - 1;
 
-        $characters[] = $this->characterFactory->createGnome($weapons[rand(0, $weaponsCount)]);
-        $characters[] = $this->characterFactory->createElf($weapons[rand(0, $weaponsCount)]);
-        $characters[] = $this->characterFactory->createKnight($weapons[rand(0, $weaponsCount)]);
-        $characters[] = $this->characterFactory->createTroll($weapons[rand(0, $weaponsCount)]);
+        $characters[] = $this->characterFactory->create(Gnome::getName(), $weapons[rand(0, $weaponsCount)]);
+        $characters[] = $this->characterFactory->create(Elf::getName(), $weapons[rand(0, $weaponsCount)]);
+        $characters[] = $this->characterFactory->create(Knight::getName(), $weapons[rand(0, $weaponsCount)]);
+        $characters[] = $this->characterFactory->create(Troll::getName(), $weapons[rand(0, $weaponsCount)]);
 
         foreach ($characters as $character) {
+            /**
+             * @var AbstractCharacter $character
+             */
             $this->notify(
-                'Char ' . $character->getName() . ' got weapon ' . $character->getWeapon()->getName()
+                'Char ' . $character::getName() . ' got weapon ' . $character->getWeapon()::getName()
             );
         }
 
@@ -87,12 +101,18 @@ class Game
             }
         } while ($charactersCount > 1);
 
+        /**
+         * @var AbstractCharacter $winner
+         */
         $winner = $characters[0];
 
         $this->notify("\n");
         $this->notify("\n***************");
         $this->notify(
-            'Winner ' . $winner->getName() . ' HP: ' . $winner->getHeals() . ' Level: ' . $winner->getLevel()
+            'Winner ' . $winner::getName() .
+            ' with Weapon ' . $winner->getWeapon()::getName() .
+            ' HP: ' . $winner->getHeals() .
+            ' Level: ' . $winner->getLevel()
         );
         $this->notify("\n***************\n");
     }
@@ -102,15 +122,17 @@ class Game
      * @param AbstractCharacter $player2
      * @return bool
      */
-    private function fight(AbstractCharacter $player1, AbstractCharacter $player2)
+    private function fight(AbstractCharacter $player1, AbstractCharacter $player2): bool
     {
-        $this->notify($player1->getName() . ' attacking ' . $player2->getName());
+        $this->notify($player1::getName() . ' attacking ' . $player2::getName());
         $player1->attack($player2);
         if ($player2->isDead()) {
-            $this->notify('Char ' . $player1->getName() . ' killed enemy ' . $player2->getName());
-            if ($player1->pickUpEnemyWeapon($player2)) {
+            $this->notify('Char ' . $player1::getName() . ' killed enemy ' . $player2::getName());
+            $isEnemyWeaponBetter = $player1->isDamageWithNewWeaponMore($player2->getWeapon());
+            if ($isEnemyWeaponBetter) {
+                $player1->setWeapon($player2->getWeapon());
                 $this->notify(
-                    'Char ' . $player1->getName() . ' picked up enemy\'s weapon ' . $player2->getWeapon()->getName()
+                    'Char ' . $player1::getName() . ' picked up enemy\'s weapon ' . $player2->getWeapon()::getName()
                 );
             }
 
@@ -126,17 +148,18 @@ class Game
      * @param $exclude
      * @return int
      */
-    private function randWithExclusion($min, $max, $exclude)
+    private function randWithExclusion($min, $max, $exclude): int
     {
         $value = rand($min, $max);
 
-        return ($value === $exclude) ? $this->randWithExclusion($min, $max, $exclude) : $value;
+        return $value === $exclude ? $this->randWithExclusion($min, $max, $exclude) : $value;
     }
 
     /**
      * @param string $message
+     * @return void
      */
-    private function notify(string $message)
+    private function notify(string $message): void
     {
         $this->notifier->setMessage($message);
         $this->notifier->notify();

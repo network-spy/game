@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Game\Character;
 
 use Game\AbstractCharacter;
-use Game\AbstractWeapon;
 
 /**
  * Class Gnome
@@ -11,15 +12,13 @@ use Game\AbstractWeapon;
  */
 class Gnome extends AbstractCharacter
 {
+    private const NAME = 'Gnome';
+
     /**
-     * Gnome constructor.
-     * @param AbstractWeapon $weapon
+     * @return string
      */
-    public function __construct(AbstractWeapon $weapon)
+    public static function getName(): string
     {
-        $this->health = 70;
-        $this->power = 2;
-        $this->name = 'Gnome';
-        parent::__construct($weapon);
+        return static::NAME;
     }
 }

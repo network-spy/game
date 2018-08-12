@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Game\Weapon;
 
 use Game\AbstractWeapon;
@@ -10,13 +12,13 @@ use Game\AbstractWeapon;
  */
 class Knife extends AbstractWeapon
 {
+    private const NAME = 'Knife';
+
     /**
-     * Knife constructor.
+     * @return string
      */
-    public function __construct()
+    public static function getName(): string
     {
-        $this->name = 'Knife';
-        $this->damage = 1;
-        $this->maxFrequency = 4;
+        return static::NAME;
     }
 }

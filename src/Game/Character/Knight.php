@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Game\Character;
 
 use Game\AbstractCharacter;
-use Game\AbstractWeapon;
 
 /**
  * Class Knight
@@ -11,15 +12,13 @@ use Game\AbstractWeapon;
  */
 class Knight extends AbstractCharacter
 {
+    private const NAME = 'Knight';
+
     /**
-     * Knight constructor.
-     * @param AbstractWeapon $weapon
+     * @return string
      */
-    public function __construct(AbstractWeapon $weapon)
+    public static function getName(): string
     {
-        $this->health = 65;
-        $this->power = 3;
-        $this->name = 'Knight';
-        parent::__construct($weapon);
+        return static::NAME;
     }
 }

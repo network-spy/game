@@ -1,8 +1,8 @@
 <?php
 
-namespace Game;
+declare(strict_types=1);
 
-use Game\AbstractWeapon;
+namespace Game;
 
 /**
  * Class AbstractCharacter
@@ -36,35 +36,46 @@ abstract class AbstractCharacter
     protected $name;
 
     /**
-     * Character constructor.
+     * @return string
+     */
+    abstract public static function getName(): string;
+
+    /**
+     * AbstractCharacter constructor.
+     * @param int $health
+     * @param int $power
      * @param AbstractWeapon $weapon
      */
-    public function __construct(AbstractWeapon $weapon)
+    public function __construct(int $health, int $power, AbstractWeapon $weapon)
     {
-        $this->weapon = $weapon;
         $this->level = 1;
+        $this->health = $health;
+        $this->power = $power;
+        $this->name = static::getName();
+        $this->setWeapon($weapon);
     }
 
     /**
      * @return AbstractWeapon
      */
-    public function getWeapon() : AbstractWeapon
+    public function getWeapon(): AbstractWeapon
     {
         return $this->weapon;
     }
 
     /**
-     * @return string
+     * @param AbstractWeapon $weapon
+     * @return void
      */
-    public function getName()
+    public function setWeapon(AbstractWeapon $weapon): void
     {
-        return $this->name;
+        $this->weapon = $weapon;
     }
 
     /**
      * @return int
      */
-    public function getLevel()
+    public function getLevel(): int
     {
         return $this->level;
     }
@@ -72,7 +83,7 @@ abstract class AbstractCharacter
     /**
      * @return int
      */
-    public function getHeals()
+    public function getHeals(): int
     {
         return $this->health;
     }
@@ -80,7 +91,7 @@ abstract class AbstractCharacter
     /**
      * @param AbstractCharacter $enemyCharacter
      */
-    public function attack(AbstractCharacter $enemyCharacter)
+    public function attack(AbstractCharacter $enemyCharacter): void
     {
         $damage = $this->weapon->getDamageBySkills($this->level, $this->power);
         $enemyCharacter->attacked($damage);
@@ -93,7 +104,7 @@ abstract class AbstractCharacter
      * @param int $damage
      * @return int
      */
-    public function attacked(int $damage)
+    public function attacked(int $damage): int
     {
         $this->health -= $damage;
 
@@ -103,25 +114,20 @@ abstract class AbstractCharacter
     /**
      * @return bool
      */
-    public function isDead()
+    public function isDead(): bool
     {
-        return ($this->health <= 0);
+        return $this->health <= 0;
     }
 
     /**
-     * @param AbstractCharacter $enemyCharacter
+     * @param AbstractWeapon $weapon
      * @return bool
      */
-    public function pickUpEnemyWeapon(AbstractCharacter $enemyCharacter)
+    public function isDamageWithNewWeaponMore(AbstractWeapon $weapon): bool
     {
-        $enemyWeaponDamage = $enemyCharacter->getWeapon()->getDamageBySkills($this->level, $this->power);
-        $myWeaponDamage =  $this->weapon->getDamageBySkills($this->level, $this->power);
-        if ($enemyWeaponDamage > $myWeaponDamage) {
-            $this->weapon = $enemyCharacter->getWeapon();
+        $newWeaponDamage = $weapon->getDamageBySkills($this->level, $this->power);
+        $currentWeaponDamage =  $this->getWeapon()->getDamageBySkills($this->level, $this->power);
 
-            return true;
-        }
-
-        return false;
+        return $newWeaponDamage > $currentWeaponDamage;
     }
 }

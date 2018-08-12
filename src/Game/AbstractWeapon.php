@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Game;
 
 /**
@@ -7,11 +9,6 @@ namespace Game;
  */
 abstract class AbstractWeapon
 {
-    /**
-     * @var string
-     */
-    protected $name;
-
     /**
      * @var int
      */
@@ -23,19 +20,27 @@ abstract class AbstractWeapon
     protected $maxFrequency;
 
     /**
-     * @return mixed
+     * AbstractWeapon constructor.
+     * @param int $damage
+     * @param int $maxFrequency
      */
-    public function getName()
+    public function __construct(int $damage, int $maxFrequency)
     {
-        return $this->name;
+        $this->damage = $damage;
+        $this->maxFrequency = $maxFrequency;
     }
+
+    /**
+     * @return string
+     */
+    abstract public static function getName(): string;
 
     /**
      * @param int $level
      * @param int $power
      * @return int
      */
-    public function getDamageBySkills(int $level, int $power)
+    public function getDamageBySkills(int $level, int $power): int
     {
         if ($level <= $this->maxFrequency) {
             return rand($level, $this->maxFrequency) * $this->damage * $power;

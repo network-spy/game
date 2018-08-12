@@ -7,12 +7,12 @@ namespace Game\Weapon;
 use Game\AbstractWeapon;
 
 /**
- * Class Sword
+ * Class Fist
  * @package Game\Weapon
  */
-class None extends AbstractWeapon
+class Fist extends AbstractWeapon
 {
-    public const NAME = 'None';
+    private const NAME = 'Fist';
 
     /**
      * @return string
