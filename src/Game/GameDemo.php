@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Game;
 
 use Game\Notifier\DisplayMessageSubject;
-use Game\AbstractCharacter;
 
 /**
  * Class Game
@@ -52,7 +53,7 @@ class Game
         $weapons[] = $this->weaponFactory->createBow();
         $weapons[] = $this->weaponFactory->createKnife();
 
-        $weaponsCount = count($weapons) - 1;
+        $weaponsCount = \count($weapons) - 1;
 
         $characters[] = $this->characterFactory->createGnome($weapons[rand(0, $weaponsCount)]);
         $characters[] = $this->characterFactory->createElf($weapons[rand(0, $weaponsCount)]);
